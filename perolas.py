@@ -1,5 +1,8 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 """
-Dado um .txt com reflexoes/quotations, sorteia um aleatorio para o dia, permite pesquisar e inserir novos
+Dado um .txt com reflexões/quotations, sorteia um aleatorio para o dia, permite pesquisar e inserir novos
 """
 
 __author__ = "Claudio Jorge Severo Medeiro"
@@ -58,10 +61,10 @@ def leArquivo(sArquivo):
 		with open(sArquivo, 'r', encoding="utf8") as fPerolas:
 			vetPerolas = fPerolas.readlines()
 			fPerolas.close()
-
-	except FileNotFoundError:
+	# except FileNotFoundError:
+	except:
 		vetPerolas = []
-		print("Arquivo '" + sArquivo + "' nao encontrado.")	
+		print("Arquivo '{}' nao encontrado.".format(sArquivo))	
 		sleep(2)
 
 	return(vetPerolas)
@@ -240,8 +243,9 @@ def pesquisarPerola():
 	sTexto = ""
 	while True:
 		os.system('clear') or None
-		print("Palavras mais comuns nas perolas cadastradas: ", end='')
-		print(palavrasMaisComuns() + "\n")
+		# print("Palavras mais comuns nas perolas cadastradas: ", end='')
+		print("Palavras mais comuns nas perolas cadastradas: {}\n".format(palavrasMaisComuns()))
+		# print(palavrasMaisComuns() + "\n")
 		
 		if sTexto.replace(' ', '').strip() == '9':
 			break
@@ -256,7 +260,8 @@ def pesquisarPerola():
 						iCont+=1
 						if iCont == 1:
 							print("Perola(s) encontrada(s) com os termos da sua pesquisa: '" + sTexto + "'\n")
-						print((3-len(str(iCont)))*'0'+str(iCont), end=' ')
+						# print((3-len(str(iCont)))*'0'+str(iCont), end=' ')
+						print((3-len(str(iCont)))*'0'+str(iCont))
 						print(lPerola)
 				
 				if iCont > 0:
@@ -303,7 +308,7 @@ def main():
 
 	while True:
 		os.system('clear') or None
-		print(perolaDoDia()+"\n")
+		print("{}\n".format(perolaDoDia()))
 		print('Funcoes:')
 		print('1 Pesquisar perolas')
 		print('2 Acrescentar texto aa relacao de perolas')
