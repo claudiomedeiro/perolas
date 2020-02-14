@@ -23,9 +23,11 @@ from time import sleep
 from random import randint
 from datetime import datetime
 import os
+import json
 
 sArquivo = 'perolas.txt'
-sArquivoCalendario = 'calendario.txt'
+sArquivoCalendario = 'sorteadas.json'
+dCalendario = {}
 
 def excluirPerolaDaBase():
 	"""
@@ -73,33 +75,26 @@ def sorteiaPerola():
 
 def perolaDoDia():
 	"""
-	Identifica se ja nao foi sorteada uma perola para o dia e a exibe, do contrario, invoca o sorteiaPerola e grava a resultante como a perola do dia
-
-	>>> perolaDoDia()
-	'Comedimento no Comer e no Beber, Modo de Vida Aristocratico, e Serenidade expressa pela Consciencia, Presenca e Generosidade (Reflexoes Pitagoricas)'
+	- Identifica se já foi sorteada uma reflexão/pérola para o dia, e do contrário, 
+	sorteia uma, e grava no arquivo. Nos dois casos devolve-a.
 	"""
-	global sArquivo
 	global sArquivoCalendario
+	global dCalendario
 
-	vetCalendario = leArquivo(sArquivoCalendario)
+	try:
+		dCalendario = abreJson(sArquivoCalendario)
+	except:
+		dCalendario = {}
 	
-	sPerola = ""
-	for lCalendario in vetCalendario:	#procura pelo do dia de hoje
-		if lCalendario.split("|")[0] == datetime.now().strftime("%Y-%m-%d"):
-			sPerola = lCalendario.split("|")[1]
-			break
+	if datetime.now().strftime("%Y-%m-%d") not in dCalendario.keys():
+		dCalendario[datetime.now().strftime("%Y-%m-%d")] = sorteiaPerola().replace("\"","'")
+		gravaJson(sArquivoCalendario, dCalendario)
 
-	if sPerola == "":
-		sPerola = sorteiaPerola()
-		if not sPerola == "":
-			sTexto = datetime.now().strftime("%Y-%m-%d") + "|" + sPerola + "\n"			
-			gravaArquivo(sArquivoCalendario, sTexto)
-	
-	return(sPerola.rstrip())
+	return(dCalendario[datetime.now().strftime("%Y-%m-%d")])
 
 def acrescentaPerola():
 	"""
-		Solicita um texto a ser acrescentado ao banco de pérolas, exibe-o na tela, 
+	- Solicita um texto a ser acrescentado ao banco de pérolas, exibe-o na tela, 
 	pedindo confirmação, e em caso positivo acrescenta-o ao arquivo/base de dados.
 	"""
 	global sArquivo
@@ -137,47 +132,60 @@ def gravaArquivo(sArquivo, sTexto, sModo='a'):
 
 	return
 
+def abreJson(sArquivo):
+	"""
+	- Recebe uma string com o nome do arquivo, abre o arquivo, e coloca em um 
+	dicionário em que cada posicao eh uma linha.
+	- Retorna no vetor e o último elemento tem um barra que depois precisa ser 
+	tirado em cada processo especifico.
+	"""
+	try:
+		with open(sArquivo, 'r') as fArquivo:
+			dArquivo = json.load(fArquivo)
+			fArquivo.close()
+	except IOError:
+		dArquivo = {}
+
+	return dArquivo
+
+def gravaJson(sArquivo, dTexto):
+	"""
+	Decebe um nome de arquivo e um dicionário, e grava esse dicionário no arquivo.
+	"""
+	try:
+		open(sArquivo,'w').write(json.dumps(dTexto))
+	except:
+		pass
+		print("Problemas ao tentar gravar no arquivo '{}'".format(sArquivo)	)
+	return
+
 def aceitarSoNumeros(sTexto):
 	"""
 	Dado um texto, verifica se eh um numero, do contrario repete o pedido de digitacao
 	"""
 	while True:
 		try:
-		    sValor = str(input(sTexto))
-		    if not sValor.replace(",",".").replace(".","").isdigit():
-		        raise ValueError(sValor)
+			sValor = str(input(sTexto))
+			if not sValor.replace(",",".").replace(".","").isdigit():
+				raise ValueError(sValor)
 		except ValueError as e:
-		    print("Valor invalido:", e)
+			print("Valor invalido:", e)
 		else:
-		    break
+			break
 
 	return sValor.replace(",",".")
 
 def resetaPerolaDoDia():
 	"""
-	Identifica a entrada do arquivo para o dia de hoje e coloca nova perola no lugar
+	Exclui a entrada do arquivo para o dia de hoje e coloca nova pérola no lugar.
 	"""
-	global sArquivo
-	global sArquivoCalendario
-
-	vetCalendario = leArquivo(sArquivoCalendario)
+	global dCalendario
 	
-	sPerola = ""
-	for lCalendario in vetCalendario:	#procura pelo do dia de hoje
-		if lCalendario.split("|")[0] == datetime.now().strftime("%Y-%m-%d"):
-			sPerola = lCalendario.split("|")[1]
-			break
-
-	if not sPerola == "":
-		sPerola = sorteiaPerola()
-		if not sPerola == "":
-			sTexto = datetime.now().strftime("%Y-%m-%d") + "|" + sPerola + "\n"
-			gravaArquivo(sArquivoCalendario, sTexto, 'w')
-
-	if sPerola == "":
-		sPerola = perolaDoDia()
-		
-	return(sPerola.rstrip())
+	if datetime.now().strftime("%Y-%m-%d") in dCalendario.keys():
+		dCalendario.pop(datetime.now().strftime("%Y-%m-%d"))
+		gravaJson(sArquivoCalendario, dCalendario)
+	
+	return(perolaDoDia())
 
 def palavrasMaisComuns(iQtde=5):
 	"""
