@@ -22,8 +22,8 @@ __email__ = "cjinfo@gmail.com"
 from time import sleep
 from random import randint
 from datetime import datetime
-import os
-import json
+from os import system
+from json import load, dumps
 
 sArquivo = 'perolas.txt'
 sArquivoCalendario = 'sorteadas.json'
@@ -100,7 +100,7 @@ def acrescentaPerola():
 	global sArquivo
 	sTexto = ""
 	while True:
-		os.system('clear') or None
+		system('clear') or None
 		if not sTexto.rstrip() == "":
 			print("Texto que você digitou: " + sTexto)
 			sFuncao = aceitarSoNumeros('1 (Confirma) ou 9 (Cancelar): ')
@@ -141,7 +141,7 @@ def abreJson(sArquivo):
 	"""
 	try:
 		with open(sArquivo, 'r') as fArquivo:
-			dArquivo = json.load(fArquivo)
+			dArquivo = load(fArquivo)
 			fArquivo.close()
 	except IOError:
 		dArquivo = {}
@@ -153,7 +153,7 @@ def gravaJson(sArquivo, dTexto):
 	Decebe um nome de arquivo e um dicionário, e grava esse dicionário no arquivo.
 	"""
 	try:
-		open(sArquivo,'w').write(json.dumps(dTexto))
+		open(sArquivo,'w').write(dumps(dTexto))
 	except:
 		pass
 		print("Problemas ao tentar gravar no arquivo '{}'".format(sArquivo)	)
@@ -223,7 +223,7 @@ def pesquisarPerola():
 	global sArquivo
 	sTexto = ""
 	while True:
-		os.system('clear') or None
+		system('clear') or None
 		print("Palavras mais comuns nas perolas cadastradas: {}\n".format(palavrasMaisComuns()))
 		
 		if sTexto.replace(' ', '').strip() == '9':
@@ -280,7 +280,7 @@ def main():
 	Digite o numero da funcao desejada:
 	"""
 	while True:
-		os.system('clear') or None
+		system('clear') or None
 		print("{}\n".format(perolaDoDia()))
 		print('Funções:')
 		print('1 Pesquisar pérolas')
