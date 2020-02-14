@@ -3,6 +3,18 @@
 """
 	Dado um .txt com reflexões/quotations, sorteia um aleatório para o dia, permite 
 pesquisar e inserir novos.
+
+BACKLOG:
+01) Avaliar mudança da estrutura de base (perolas.txt) para um '.json', isso pode 
+	inclusive viabilizar um resetar pérola mais inteligente, que exclui só a do dia,
+	e não a íntegra das pérolas dos dias anteriores
+02) Separa mais telas de funcionalidades, para subsidiar evoluções futuras com 
+	interface gráfica
+03) Reavaliar as estruturas de variáveis e tudo o mais do script, para que rode 
+	com menos memória, já que a ideia é rodá-lo em smartphones
+	03.1) Avaliar mover a estrutura que identifica as 'palavras da moda' para o início do
+		script, evitando assim que fique rodando tantas vezes, e invocá-la novamente, 
+		em cada evento de inserir/excluir pérolas
 """
 __author__ = "Claudio Jorge Severo Medeiro"
 __email__ = "cjinfo@gmail.com"
@@ -14,6 +26,15 @@ import os
 
 sArquivo = 'perolas.txt'
 sArquivoCalendario = 'calendario.txt'
+
+def excluirPerolaDaBase():
+	"""
+	BACKLOG: Implementar o método, para que o usuário possa excluir uma determinada
+		pérola de sua base, quando julgar que aquele texto não tem tanto haver 
+		consigo, mas é preciso avaliar se não deixaria o usuário excluir apenas 
+		o que ele mesmo inseriu, ao invés de permitir que exclua qualquer coisa.
+	"""
+	pass
 
 def leArquivo(sArquivo):
 	"""
@@ -283,5 +304,5 @@ def _test():
 	return doctest.testmod(perolas)
 
 if __name__ == "__main__":
-	_test()
+	# _test()
 	main()
