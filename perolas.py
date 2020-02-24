@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-- Dado um .txt com reflexões/quotations, sorteia um aleatório para o dia, 
+""" Dado um .txt com reflexões/quotations, sorteia um aleatório para o dia, 
 permite pesquisar e inserir novos.
 """
 __author__ = "Claudio Jorge Severo Medeiro"
@@ -18,14 +17,10 @@ str_arquivo_calendario = 'sorteadas.json'
 dic_calendario = {}
 
 def le_arquivo(str_arquivo):
-	"""
-	Dado o nome do arquivo, abre e devolve seu conteudo em uma lista de linhas
-
-	>>> le_arquivo("perolas.txt")
-	['Comedimento no Comer e no Beber, Modo de Vida Aristocratico, e Serenidade expressa pela Consciencia, Presenca e Generosidade (Reflexoes Pitagoricas)\\n', 'Comedimento no Comer e no Beber, Modo de Vida Aristocratico, e Serenidade expressa pela Consciencia, Presenca e Generosidade (Reflexoes Pitagoricas)\\n', 'Comedimento no Comer e no Beber, Modo de Vida Aristocratico, e Serenidade expressa pela Consciencia, Presenca e Generosidade (Reflexoes Pitagoricas)\\n', 'Comedimento no Comer e no Beber, Modo de Vida Aristocratico, e Serenidade expressa pela Consciencia, Presenca e Generosidade (Reflexoes Pitagoricas)']
+	""" Dado o nome do arquivo, abre e devolve seu conteudo em uma lista de linhas
 	"""
 	try:
-		with open(str_arquivo, 'r', encoding="utf8") as fil_perolas:
+		with open(str_arquivo, 'r') as fil_perolas:
 			vet_perolas = fil_perolas.readlines()
 			fil_perolas.close()
 	except:
@@ -36,11 +31,7 @@ def le_arquivo(str_arquivo):
 	return(vet_perolas)
 
 def sorteia_perola():
-	"""
-	Abre o .txt, conta o numero de quotations, e sorteia uma delas para ser a reflexao do dia
-
-	>>> sorteia_perola()
-	'Comedimento no Comer e no Beber, Modo de Vida Aristocratico, e Serenidade expressa pela Consciencia, Presenca e Generosidade (Reflexoes Pitagoricas)'
+	""" Abre o .txt, conta o numero de quotations, e sorteia uma delas para ser a reflexao do dia
 	"""
 	global str_arquivo
 	vet_perolas = le_arquivo(str_arquivo)
@@ -53,8 +44,7 @@ def sorteia_perola():
 	return(str_perola)
 
 def perola_do_dia():
-	"""
-	- Identifica se já foi sorteada uma reflexão/pérola para o dia, e do contrário, 
+	""" Identifica se já foi sorteada uma reflexão/pérola para o dia, e do contrário, 
 	sorteia uma, e grava no arquivo. Nos dois casos devolve-a.
 	"""
 	global str_arquivo_calendario
@@ -72,8 +62,7 @@ def perola_do_dia():
 	return(dic_calendario[datetime.now().strftime("%Y-%m-%d")])
 
 def acrescenta_perola():
-	"""
-	- Solicita um texto a ser acrescentado ao banco de pérolas, exibe-o na tela, 
+	""" Solicita um texto a ser acrescentado ao banco de pérolas, exibe-o na tela, 
 	pedindo confirmação, e em caso positivo acrescenta-o ao arquivo/base de dados.
 	"""
 	global str_arquivo
@@ -97,9 +86,7 @@ def acrescenta_perola():
 			str_texto = str(input("Digite a perola: "))
 
 def grava_arquivo(str_arquivo, str_texto, sModo='a'):
-	"""
-	Dado o nome de um arquivo, e um texto, acrescenta o texto ao final do arquivo
-	>>> acrescentaAoArquivo("perolas.txt","texto acrescentado","a")
+	""" Dado o nome de um arquivo, e um texto, acrescenta o texto ao final do arquivo
 	"""
 	try:
 		with open(str_arquivo, sModo, encoding="utf8") as fil_perolas:
@@ -112,10 +99,10 @@ def grava_arquivo(str_arquivo, str_texto, sModo='a'):
 	return
 
 def abre_json(str_arquivo):
-	"""
-	- Recebe uma string com o nome do arquivo, abre o arquivo, e coloca em um 
+	""" Recebe uma string com o nome do arquivo, abre o arquivo, e coloca em um 
 	dicionário em que cada posicao eh uma linha.
-	- Retorna no vetor e o último elemento tem um barra que depois precisa ser 
+
+	Retorna no vetor e o último elemento tem um barra que depois precisa ser 
 	tirado em cada processo especifico.
 	"""
 	try:
@@ -128,8 +115,7 @@ def abre_json(str_arquivo):
 	return dic_arquivo
 
 def grava_json(str_arquivo, dic_texto):
-	"""
-	Decebe um nome de arquivo e um dicionário, e grava esse dicionário no arquivo.
+	""" Recebe um nome de arquivo e um dicionário, e grava esse dicionário no arquivo.
 	"""
 	try:
 		open(str_arquivo,'w').write(dumps(dic_texto))
@@ -139,8 +125,7 @@ def grava_json(str_arquivo, dic_texto):
 	return
 
 def aceitar_so_numeros(str_texto):
-	"""
-	Dado um texto, verifica se eh um numero, do contrario repete o pedido de digitacao
+	""" Dado um texto, verifica se eh um numero, do contrario repete o pedido de digitacao
 	"""
 	while True:
 		try:
@@ -155,8 +140,7 @@ def aceitar_so_numeros(str_texto):
 	return str_valor.replace(",",".")
 
 def reseta_perola_do_dia():
-	"""
-	Exclui a entrada do arquivo para o dia de hoje e coloca nova pérola no lugar.
+	""" Exclui a entrada do arquivo para o dia de hoje e coloca nova pérola no lugar.
 	"""
 	global dic_calendario
 	
@@ -167,8 +151,7 @@ def reseta_perola_do_dia():
 	return(perola_do_dia())
 
 def palavras_mais_comuns(int_qtde=5):
-	"""
-		Percorre toda a base de pérolas, conta as ocorrências de cada palavra 
+	""" Percorre toda a base de pérolas, conta as ocorrências de cada palavra 
 	com 04 ou mais caracteres, ordena decrescente pela quantidade de ocorrências
 	e devolve uma string com as X (05 por default) maiores ocorrências.
 	"""
@@ -196,8 +179,7 @@ def palavras_mais_comuns(int_qtde=5):
 	return(str_palavras_mais_comuns)
 
 def pesquisar_perola():
-	"""
-	Exibe as palavras mais comuns da base de dados, e questiona termos de busca
+	""" Exibe as palavras mais comuns da base de dados, e questiona termos de busca
 	"""
 	global str_arquivo
 	str_texto = ""
@@ -239,24 +221,13 @@ def pesquisar_perola():
 			str_texto = str(input("Digite os termos da pesquisa (minimo 03 letras) ou 9 para sair: "))
 
 def main():
-	"""
-	Aqui é o corpo principal do perolas.py
-	
-	01) Ao carregar vai exibir a perola do dia
-	02) Vai exibir as opcoes que o usuario tem, quais sejam:
+	""" Ao carregar vai exibir a perola do dia
+
+	Vai exibir as opcoes que o usuario tem, quais sejam:
 		a) resetar a perola do dia (vai rodar novamente o processo de escolha da perola do dia, e desprezar a escolha anterior)
 		b) acrescentar perola
 		c) pesquisar
 		d) sair do programa
-		
-	>>> main()
-	Comedimento no Comer e no Beber, Modo de Vida Aristocratico, e Serenidade expressa pela Consciencia, Presenca e Generosidade (Reflexoes Pitagoricas)
-	Funcoes:
-	1 Resetar a perola do dia
-	2 Acrescentar texto aa relacao de perolas
-	3 Pesquisar perolas
-	9 Sair do programa	
-	Digite o numero da funcao desejada:
 	"""
 	while True:
 		system('clear') or None
@@ -283,13 +254,5 @@ def main():
 
 	return
 
-def _test():
-	"""
-	Executa os testes dos metodos que tem DOCTESTS
-	"""
-	import doctest, perolas
-	return doctest.testmod(perolas)
-
 if __name__ == "__main__":
-	# _test()
 	main()
