@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-	Dado um .txt com reflexões/quotations, sorteia um aleatório para o dia, permite 
-pesquisar e inserir novos.
+- Dado um .txt com reflexões/quotations, sorteia um aleatório para o dia, 
+permite pesquisar e inserir novos.
 """
 __author__ = "Claudio Jorge Severo Medeiro"
 __email__ = "cjinfo@gmail.com"
@@ -13,27 +13,27 @@ from datetime import datetime
 from os import system
 from json import load, dumps
 
-sArquivo = 'perolas.txt'
-sArquivoCalendario = 'sorteadas.json'
-dCalendario = {}
+str_arquivo = 'perolas.txt'
+str_arquivo_calendario = 'sorteadas.json'
+dic_calendario = {}
 
-def le_arquivo(sArquivo):
+def le_arquivo(str_arquivo):
 	"""
-	Dado o nome de um arquivo, abre e devolve seu conteudo em uma lista de linhas
+	Dado o nome do arquivo, abre e devolve seu conteudo em uma lista de linhas
 
 	>>> le_arquivo("perolas.txt")
 	['Comedimento no Comer e no Beber, Modo de Vida Aristocratico, e Serenidade expressa pela Consciencia, Presenca e Generosidade (Reflexoes Pitagoricas)\\n', 'Comedimento no Comer e no Beber, Modo de Vida Aristocratico, e Serenidade expressa pela Consciencia, Presenca e Generosidade (Reflexoes Pitagoricas)\\n', 'Comedimento no Comer e no Beber, Modo de Vida Aristocratico, e Serenidade expressa pela Consciencia, Presenca e Generosidade (Reflexoes Pitagoricas)\\n', 'Comedimento no Comer e no Beber, Modo de Vida Aristocratico, e Serenidade expressa pela Consciencia, Presenca e Generosidade (Reflexoes Pitagoricas)']
 	"""
 	try:
-		with open(sArquivo, 'r', encoding="utf8") as fPerolas:
-			vetPerolas = fPerolas.readlines()
-			fPerolas.close()
+		with open(str_arquivo, 'r', encoding="utf8") as fil_perolas:
+			vet_perolas = fil_perolas.readlines()
+			fil_perolas.close()
 	except:
-		vetPerolas = []
-		print("Arquivo '{}' nao encontrado.".format(sArquivo))	
+		vet_perolas = []
+		print("Arquivo '{}' nao encontrado.".format(str_arquivo))	
 		sleep(2)
 
-	return(vetPerolas)
+	return(vet_perolas)
 
 def sorteia_perola():
 	"""
@@ -42,76 +42,76 @@ def sorteia_perola():
 	>>> sorteia_perola()
 	'Comedimento no Comer e no Beber, Modo de Vida Aristocratico, e Serenidade expressa pela Consciencia, Presenca e Generosidade (Reflexoes Pitagoricas)'
 	"""
-	global sArquivo
-	vetPerolas = le_arquivo(sArquivo)
-	if len(vetPerolas) > 0:
-		iRandom = randint(0, len(vetPerolas)-1)
-		sPerola = vetPerolas[iRandom].rstrip()
+	global str_arquivo
+	vet_perolas = le_arquivo(str_arquivo)
+	if len(vet_perolas) > 0:
+		int_random = randint(0, len(vet_perolas)-1)
+		str_perola = vet_perolas[int_random].rstrip()
 	else:
-		sPerola = ""
+		str_perola = ""
 
-	return(sPerola)
+	return(str_perola)
 
 def perola_do_dia():
 	"""
 	- Identifica se já foi sorteada uma reflexão/pérola para o dia, e do contrário, 
 	sorteia uma, e grava no arquivo. Nos dois casos devolve-a.
 	"""
-	global sArquivoCalendario
-	global dCalendario
+	global str_arquivo_calendario
+	global dic_calendario
 
 	try:
-		dCalendario = abre_json(sArquivoCalendario)
+		dic_calendario = abre_json(str_arquivo_calendario)
 	except:
-		dCalendario = {}
+		dic_calendario = {}
 	
-	if datetime.now().strftime("%Y-%m-%d") not in dCalendario.keys():
-		dCalendario[datetime.now().strftime("%Y-%m-%d")] = sorteia_perola().replace("\"","'")
-		grava_json(sArquivoCalendario, dCalendario)
+	if datetime.now().strftime("%Y-%m-%d") not in dic_calendario.keys():
+		dic_calendario[datetime.now().strftime("%Y-%m-%d")] = sorteia_perola().replace("\"","'")
+		grava_json(str_arquivo_calendario, dic_calendario)
 
-	return(dCalendario[datetime.now().strftime("%Y-%m-%d")])
+	return(dic_calendario[datetime.now().strftime("%Y-%m-%d")])
 
 def acrescenta_perola():
 	"""
 	- Solicita um texto a ser acrescentado ao banco de pérolas, exibe-o na tela, 
 	pedindo confirmação, e em caso positivo acrescenta-o ao arquivo/base de dados.
 	"""
-	global sArquivo
-	sTexto = ""
+	global str_arquivo
+	str_texto = ""
 	while True:
 		system('clear') or None
-		if not sTexto.rstrip() == "":
-			print("Texto que você digitou: " + sTexto)
-			sFuncao = aceitar_so_numeros('1 (Confirma) ou 9 (Cancelar): ')
-			if int(sFuncao) == 1:
-				grava_arquivo(sArquivo, "\n"+sTexto.replace('"', "'"))
+		if not str_texto.rstrip() == "":
+			print("Texto que você digitou: " + str_texto)
+			str_funcao = aceitar_so_numeros('1 (Confirma) ou 9 (Cancelar): ')
+			if int(str_funcao) == 1:
+				grava_arquivo(str_arquivo, "\n"+str_texto.replace('"', "'"))
 				print("Texto acrescentado ao arquivo de pérolas")
 				sleep(2)
 				break
-			elif int(sFuncao) == 9:
+			elif int(str_funcao) == 9:
 				break
 			else:
 				print("Você precisa escolher uma das opções listadas")
 				sleep(2)
 		else:
-			sTexto = str(input("Digite a perola: "))
+			str_texto = str(input("Digite a perola: "))
 
-def grava_arquivo(sArquivo, sTexto, sModo='a'):
+def grava_arquivo(str_arquivo, str_texto, sModo='a'):
 	"""
 	Dado o nome de um arquivo, e um texto, acrescenta o texto ao final do arquivo
 	>>> acrescentaAoArquivo("perolas.txt","texto acrescentado","a")
 	"""
 	try:
-		with open(sArquivo, sModo, encoding="utf8") as fPerolas:
-			fPerolas.write(sTexto)
-			fPerolas.close()
+		with open(str_arquivo, sModo, encoding="utf8") as fil_perolas:
+			fil_perolas.write(str_texto)
+			fil_perolas.close()
 
 	except FileNotFoundError:
-		print("Problemas ao tentar gravar no arquivo '" + sArquivo + "'.")	
+		print("Problemas ao tentar gravar no arquivo '" + str_arquivo + "'.")	
 
 	return
 
-def abre_json(sArquivo):
+def abre_json(str_arquivo):
 	"""
 	- Recebe uma string com o nome do arquivo, abre o arquivo, e coloca em um 
 	dicionário em que cada posicao eh uma linha.
@@ -119,124 +119,124 @@ def abre_json(sArquivo):
 	tirado em cada processo especifico.
 	"""
 	try:
-		with open(sArquivo, 'r') as fArquivo:
-			dArquivo = load(fArquivo)
-			fArquivo.close()
+		with open(str_arquivo, 'r') as fil_arquivo:
+			dic_arquivo = load(fil_arquivo)
+			fil_arquivo.close()
 	except IOError:
-		dArquivo = {}
+		dic_arquivo = {}
 
-	return dArquivo
+	return dic_arquivo
 
-def grava_json(sArquivo, dTexto):
+def grava_json(str_arquivo, dic_texto):
 	"""
 	Decebe um nome de arquivo e um dicionário, e grava esse dicionário no arquivo.
 	"""
 	try:
-		open(sArquivo,'w').write(dumps(dTexto))
+		open(str_arquivo,'w').write(dumps(dic_texto))
 	except:
 		pass
-		print("Problemas ao tentar gravar no arquivo '{}'".format(sArquivo)	)
+		print("Problemas ao tentar gravar no arquivo '{}'".format(str_arquivo)	)
 	return
 
-def aceitar_so_numeros(sTexto):
+def aceitar_so_numeros(str_texto):
 	"""
 	Dado um texto, verifica se eh um numero, do contrario repete o pedido de digitacao
 	"""
 	while True:
 		try:
-			sValor = str(input(sTexto))
-			if not sValor.replace(",",".").replace(".","").isdigit():
-				raise ValueError(sValor)
+			str_valor = str(input(str_texto))
+			if not str_valor.replace(",",".").replace(".","").isdigit():
+				raise ValueError(str_valor)
 		except ValueError as e:
 			print("Valor invalido:", e)
 		else:
 			break
 
-	return sValor.replace(",",".")
+	return str_valor.replace(",",".")
 
 def reseta_perola_do_dia():
 	"""
 	Exclui a entrada do arquivo para o dia de hoje e coloca nova pérola no lugar.
 	"""
-	global dCalendario
+	global dic_calendario
 	
-	if datetime.now().strftime("%Y-%m-%d") in dCalendario.keys():
-		dCalendario.pop(datetime.now().strftime("%Y-%m-%d"))
-		grava_json(sArquivoCalendario, dCalendario)
+	if datetime.now().strftime("%Y-%m-%d") in dic_calendario.keys():
+		dic_calendario.pop(datetime.now().strftime("%Y-%m-%d"))
+		grava_json(str_arquivo_calendario, dic_calendario)
 	
 	return(perola_do_dia())
 
-def palavras_mais_comuns(iQtde=5):
+def palavras_mais_comuns(int_qtde=5):
 	"""
 		Percorre toda a base de pérolas, conta as ocorrências de cada palavra 
 	com 04 ou mais caracteres, ordena decrescente pela quantidade de ocorrências
 	e devolve uma string com as X (05 por default) maiores ocorrências.
 	"""
-	dPerolas = {}
-	vetPerolas = le_arquivo(sArquivo)
-	for lPerola in vetPerolas:
-		vetPalavras = lPerola.split(' ')
-		for sPalavra in vetPalavras:
-			if (len(sPalavra.replace(' ','')) >= 4) and (not sPalavra.replace(' ','').isdigit()):
-				if sPalavra in dPerolas:
-					dPerolas[sPalavra] += 1
+	dic_perolas = {}
+	vet_perolas = le_arquivo(str_arquivo)
+	for perola in vet_perolas:
+		vet_palavras = perola.split(' ')
+		for str_palavra in vet_palavras:
+			if (len(str_palavra.replace(' ','')) >= 4) and (not str_palavra.replace(' ','').isdigit()):
+				if str_palavra in dic_perolas:
+					dic_perolas[str_palavra] += 1
 				else:
-					dPerolas[sPalavra]  = 1
+					dic_perolas[str_palavra]  = 1
 
-	vetQuantidades = []
-	vetQuantidades += dPerolas.values()
-	vetQuantidades.sort()
-	vetQuantidades = vetQuantidades[::-1]
-	vetQtde = vetQuantidades[:iQtde]
-	sPalavrasMaisComuns = ""
-	for iCont in vetQtde:
-		sPalavrasMaisComuns += list(dPerolas.keys())[list(dPerolas.values()).index(iCont)] + " "
-		dPerolas.pop(list(dPerolas.keys())[list(dPerolas.values()).index(iCont)])
+	vet_quantidades = []
+	vet_quantidades += dic_perolas.values()
+	vet_quantidades.sort()
+	vet_quantidades = vet_quantidades[::-1]
+	vet_qtde = vet_quantidades[:int_qtde]
+	str_palavras_mais_comuns = ""
+	for int_cont in vet_qtde:
+		str_palavras_mais_comuns += list(dic_perolas.keys())[list(dic_perolas.values()).index(int_cont)] + " "
+		dic_perolas.pop(list(dic_perolas.keys())[list(dic_perolas.values()).index(int_cont)])
 
-	return(sPalavrasMaisComuns)
+	return(str_palavras_mais_comuns)
 
 def pesquisar_perola():
 	"""
 	Exibe as palavras mais comuns da base de dados, e questiona termos de busca
 	"""
-	global sArquivo
-	sTexto = ""
+	global str_arquivo
+	str_texto = ""
 	while True:
 		system('clear') or None
 		print("Palavras mais comuns nas perolas cadastradas: {}\n".format(palavras_mais_comuns()))
 		
-		if sTexto.replace(' ', '').strip() == '9':
+		if str_texto.replace(' ', '').strip() == '9':
 			break
-		elif not len(sTexto.replace(' ', '').strip()) < 3:
-			print("Texto que você digitou: " + sTexto)
-			sFuncao = aceitar_so_numeros('1 (Confirma) ou 9 (Cancelar): ')
-			if int(sFuncao) == 1:
-				vetPerolas = le_arquivo(sArquivo)
-				iCont = 0
-				for lPerola in vetPerolas:	
-					if sTexto in lPerola:
-						iCont+=1
-						if iCont == 1:
-							print("Perola(s) encontrada(s) com os termos da sua pesquisa: '" + sTexto + "'\n")
+		elif not len(str_texto.replace(' ', '').strip()) < 3:
+			print("Texto que você digitou: " + str_texto)
+			str_funcao = aceitar_so_numeros('1 (Confirma) ou 9 (Cancelar): ')
+			if int(str_funcao) == 1:
+				vet_perolas = le_arquivo(str_arquivo)
+				int_cont = 0
+				for perola in vet_perolas:	
+					if str_texto in perola:
+						int_cont+=1
+						if int_cont == 1:
+							print("Perola(s) encontrada(s) com os termos da sua pesquisa: '" + str_texto + "'\n")
 
-						print((3-len(str(iCont)))*'0'+str(iCont))
-						print(lPerola)
+						print((3-len(str(int_cont)))*'0'+str(int_cont))
+						print(perola)
 				
-				if iCont > 0:
+				if int_cont > 0:
 					input("Pressione ENTER para sair: ")
 					break
 				else:
-					print("Nao tem nenhuma perola com o texto que você digitou: '" + sTexto + "'")
+					print("Nao tem nenhuma perola com o texto que você digitou: '" + str_texto + "'")
 					print("Voltando para a tela inicial")
 					sleep(2)
 					break
-			elif int(sFuncao) == 9:
+			elif int(str_funcao) == 9:
 				break
 			else:
 				print("Você precisa escolhar uma das opcoes listadas")
 				sleep(2)
 		else:
-			sTexto = str(input("Digite os termos da pesquisa (minimo 03 letras) ou 9 para sair: "))
+			str_texto = str(input("Digite os termos da pesquisa (minimo 03 letras) ou 9 para sair: "))
 
 def main():
 	"""
@@ -266,15 +266,15 @@ def main():
 		print('2 Acrescentar texto aa relação de pérolas')
 		print('3 Resetar a pérola do dia')
 		print('9 Sair do programa')
-		sFuncao = aceitar_so_numeros('Digite o número da função desejada: ')
-		if int(sFuncao) == 3:
+		str_funcao = aceitar_so_numeros('Digite o número da função desejada: ')
+		if int(str_funcao) == 3:
 			reseta_perola_do_dia()
-		elif int(sFuncao) == 2:
+		elif int(str_funcao) == 2:
 			acrescenta_perola()
-		elif int(sFuncao) == 1:
+		elif int(str_funcao) == 1:
 			pesquisar_perola()
 			pass
-		elif int(sFuncao) == 9:
+		elif int(str_funcao) == 9:
 			print("Obrigado por usar o aplicativo! Até logo!")
 			break
 		else:
